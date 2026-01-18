@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>שחמט חיסולים</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Rubik:wght@400;500;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="app-background"></div>
+    <div class="app-container">
+        <header>
+            <div class="logo">
+                <span class="icon">⚡</span>
+                <h1>שחמט לייזר</h1>
+            </div>
+            <p class="subtitle">איימתָ - אכלתָ!</p>
+            <div id="tournament-score" class="tournament-score">
+                טורניר: <span id="player-wins">0</span> (אתה) - <span id="computer-wins">0</span> (מחשב)
+            </div>
+        </header>
+
+        <main>
+            <div class="game-area">
+                <div class="player-hud player-top">
+                    <div class="hud-content">
+                        <div class="avatar">🖤</div>
+                        <div class="info">
+                            <span class="name">שחור</span>
+                            <div class="score-container">
+                                <span>נקודות:</span>
+                                <span id="score-black" class="score-value">0</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="captured-pieces" id="captured-by-black"></div>
+                </div>
+
+                <div class="board-container">
+                    <div id="board" class="chess-board"></div>
+                    <div id="threat-overlay" class="overlay"></div>
+                </div>
+
+                <div class="player-hud player-bottom">
+                    <div class="hud-content">
+                        <div class="avatar">🤍</div>
+                        <div class="info">
+                            <span class="name">לבן</span>
+                            <div class="score-container">
+                                <span>נקודות:</span>
+                                <span id="score-white" class="score-value">0</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="captured-pieces" id="captured-by-white"></div>
+                </div>
+            </div>
+
+            <aside class="game-sidebar">
+                <div class="panel glass-panel">
+                    <h2>תור נוכחי</h2>
+                    <div id="turn-indicator" class="turn-badge white-turn">לבן</div>
+                    <div id="status-message" class="status-text">המשחק מתחיל...</div>
+                </div>
+
+                <div class="panel glass-panel rules-summary">
+                    <h3>חוקים מקוצרים</h3>
+                    <ul>
+                        <li>🎯 <strong>איום = חיסול:</strong> כלי שמאיים על כלי יריב מסיר אותו מיד.</li>
+                        <li>🛡️ <strong>אין שח/מט:</strong> המלך הוא כלי רגיל.</li>
+                        <li>⚔️ <strong>חובת תנועה:</strong> חייבים לזוז כדי "לירות".</li>
+                    </ul>
+                </div>
+
+                <div class="controls">
+                    <button id="restart-btn" class="btn primary-btn">
+                        <span class="btn-icon">↺</span> משחק חדש
+                    </button>
+                    <button id="reset-tournament-btn" class="btn secondary-btn"
+                        style="margin-top: 10px; background: rgba(255,255,255,0.1); width: 100%;">
+                        איפוס טורניר
+                    </button>
+                </div>
+            </aside>
+        </main>
+        <div id="victory-modal" class="modal hidden">
+            <div class="modal-content">
+                <h2 id="victory-title">ניצחון!</h2>
+                <p id="victory-message">השחקן הלבן ניצח</p>
+                <button id="new-game-btn" class="btn primary-btn">משחק חדש</button>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+
+</html>
