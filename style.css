@@ -1,22 +1,28 @@
 :root {
-    /* Dramatic Neon Palette */
-    --bg-gradient: radial-gradient(circle at center, #1a1a2e 0%, #0f0c29 100%);
-    --primary-color: #7000ff;
-    /* Electric Purple */
-    --accent-color: #00fff2;
-    /* Neon Cyan */
-    --text-light: #ffffff;
-    --text-dim: #a6a6c3;
+    /* Light Theme Palette */
+    --bg-gradient: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+    /* Very light blue/white */
+    --primary-color: #6366f1;
+    /* Indigo */
+    --accent-color: #0ea5e9;
+    /* Sky Blue */
+    --text-light: #1e293b;
+    /* Dark Slate for text */
+    --text-dim: #64748b;
+    /* Lighter Slate */
 
-    --board-light: #2a2a40;
-    --board-dark: #161625;
-    --board-highlight: rgba(112, 0, 255, 0.4);
-    --threat-color: rgba(255, 0, 68, 0.8);
-    /* Neon Red */
+    --board-light: #ffffff;
+    /* White squares */
+    --board-dark: #cbd5e1;
+    /* Light Gray squares */
+    --board-highlight: rgba(99, 102, 241, 0.4);
+    --threat-color: rgba(239, 68, 68, 0.8);
+    /* Red */
 
-    --glass-bg: rgba(20, 20, 35, 0.7);
-    --glass-border: rgba(112, 0, 255, 0.3);
-    --glass-blur: blur(20px);
+    --glass-bg: rgba(255, 255, 255, 0.7);
+    /* Frosted Glass (White) */
+    --glass-border: rgba(99, 102, 241, 0.2);
+    --glass-blur: blur(12px);
 }
 
 body {
@@ -50,8 +56,8 @@ header h1 {
     margin: 0;
     font-size: 3rem;
     font-weight: 800;
-    text-shadow: 0 0 20px var(--primary-color), 0 0 40px var(--accent-color);
-    background: linear-gradient(to right, #00fff2, #7000ff);
+    /* Removed thick shadows for cleaner look */
+    background: linear-gradient(to right, #4f46e5, #0ea5e9);
     background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -78,11 +84,13 @@ header h1 {
 
 /* Welcome Screen Specifics */
 .welcome-content {
-    background: radial-gradient(circle, #1a1a2e 0%, #000 100%);
+    background: #ffffff;
     border-color: var(--primary-color);
-    box-shadow: 0 0 40px var(--primary-color);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
     max-width: 500px;
     width: 90%;
+    color: var(--text-light);
+    /* Dark text */
 }
 
 .logo.large {
@@ -98,17 +106,19 @@ header h1 {
 }
 
 .rules-box {
-    background: rgba(0, 0, 0, 0.3);
+    background: rgba(99, 102, 241, 0.05);
+    /* Very light purple tint */
     padding: 1rem;
     border-radius: 12px;
     margin: 1.5rem 0;
     text-align: right;
+    border: 1px solid rgba(99, 102, 241, 0.1);
 }
 
 .rules-box h3 {
     margin-top: 0;
-    color: #fb7185;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    color: var(--primary-color);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
     padding-bottom: 0.5rem;
 }
 

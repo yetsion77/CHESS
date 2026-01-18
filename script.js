@@ -402,11 +402,9 @@ function eliminatePiece(r, c) {
     const containerId = killerColor === 'w' ? 'captured-by-white' : 'captured-by-black';
     const container = document.getElementById(containerId);
 
+    // Icons removed per user request
     if (container) {
-        const img = document.createElement('img');
-        img.src = PIECE_THEME_URL + PIECES_SVG[piece];
-        img.className = 'captured-icon';
-        container.appendChild(img);
+        container.innerHTML = '';
     }
 }
 
