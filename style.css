@@ -1,18 +1,22 @@
 :root {
-    --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
-    --primary-color: #6366f1;
-    --accent-color: #f43f5e;
-    --text-light: #f8fafc;
-    --text-dim: #94a3b8;
+    /* Dramatic Neon Palette */
+    --bg-gradient: radial-gradient(circle at center, #1a1a2e 0%, #0f0c29 100%);
+    --primary-color: #7000ff;
+    /* Electric Purple */
+    --accent-color: #00fff2;
+    /* Neon Cyan */
+    --text-light: #ffffff;
+    --text-dim: #a6a6c3;
 
-    --board-light: #e2e8f0;
-    --board-dark: #64748b;
-    --board-highlight: rgba(99, 102, 241, 0.5);
-    --threat-color: rgba(244, 63, 94, 0.6);
+    --board-light: #2a2a40;
+    --board-dark: #161625;
+    --board-highlight: rgba(112, 0, 255, 0.4);
+    --threat-color: rgba(255, 0, 68, 0.8);
+    /* Neon Red */
 
-    --glass-bg: rgba(255, 255, 255, 0.05);
-    --glass-border: rgba(255, 255, 255, 0.1);
-    --glass-blur: blur(12px);
+    --glass-bg: rgba(20, 20, 35, 0.7);
+    --glass-border: rgba(112, 0, 255, 0.3);
+    --glass-blur: blur(20px);
 }
 
 body {
@@ -22,18 +26,61 @@ body {
     background: var(--bg-gradient);
     min-height: 100vh;
     direction: rtl;
-    direction: rtl;
     overflow-x: hidden;
     /* Only prevent horizontal scroll */
-    min-height: 100vh;
 }
 
-/* ... */
+/* Layout */
+.app-container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+}
+
+header {
+    flex: 0 0 auto;
+    padding: 1rem 0;
+    text-align: center;
+}
+
+header h1 {
+    margin: 0;
+    font-size: 3rem;
+    font-weight: 800;
+    text-shadow: 0 0 20px var(--primary-color), 0 0 40px var(--accent-color);
+    background: linear-gradient(to right, #00fff2, #7000ff);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    display: inline-block;
+}
+
+.subtitle {
+    margin: 0.5rem 0 0;
+    color: var(--text-dim);
+    font-size: 1.1rem;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.logo .icon {
+    font-size: 2.5rem;
+    animation: pulse 2s infinite;
+}
 
 /* Welcome Screen Specifics */
 .welcome-content {
-    background: linear-gradient(135deg, #2e1065 0%, #4c1d95 100%);
-    border-color: #f43f5e;
+    background: radial-gradient(circle, #1a1a2e 0%, #000 100%);
+    border-color: var(--primary-color);
+    box-shadow: 0 0 40px var(--primary-color);
     max-width: 500px;
     width: 90%;
 }
@@ -76,39 +123,6 @@ body {
     line-height: 1.4;
 }
 
-/* Layout */
-.app-container {
-    display: flex;
-    flex-direction: column;
-    height: 100vh;
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 1rem;
-}
-
-header {
-    flex: 0 0 auto;
-    padding: 1rem 0;
-    text-align: center;
-}
-
-header h1 {
-    margin: 0;
-    font-size: 2.5rem;
-    font-weight: 800;
-    background: linear-gradient(to right, #818cf8, #c084fc);
-    background-clip: text;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    display: inline-block;
-}
-
-.subtitle {
-    margin: 0.5rem 0 0;
-    color: var(--text-dim);
-    font-size: 1.1rem;
-}
-
 main {
     flex: 1;
     display: flex;
@@ -131,7 +145,6 @@ main {
     align-items: center;
     gap: 1rem;
     width: 480px;
-    /* Match board width */
     max-width: 100%;
     padding: 0.8rem;
     background: var(--glass-bg);
@@ -139,7 +152,6 @@ main {
     backdrop-filter: var(--glass-blur);
     border-radius: 12px;
     box-sizing: border-box;
-    /* justify-content: space-between; Removed as we changed internal layout */
 }
 
 .hud-content {
@@ -186,7 +198,6 @@ main {
     flex-wrap: wrap;
     gap: 4px;
     height: 30px;
-    /* Fixed height to prevent layout jumps */
 }
 
 .captured-icon {
@@ -195,20 +206,20 @@ main {
     filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.5));
 }
 
-/* Chess Board */
+/* Board Glow */
 .board-container {
     position: relative;
-    padding: 10px;
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 8px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    padding: 15px;
+    background: rgba(0, 0, 0, 0.5);
+    border: 2px solid var(--primary-color);
+    box-shadow: 0 0 30px rgba(112, 0, 255, 0.3), inset 0 0 50px rgba(0, 0, 0, 0.8);
+    border-radius: 12px;
 }
 
 .chess-board {
     display: grid;
     grid-template-columns: repeat(8, 1fr);
     width: 480px;
-    /* Reduced from 600px */
     height: 480px;
     border-radius: 4px;
     overflow: hidden;
@@ -224,34 +235,40 @@ main {
     user-select: none;
 }
 
+/* Squares */
 .square.light {
     background-color: var(--board-light);
-    color: var(--board-dark);
-    /* For coordinate text if any */
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
+    color: rgba(255, 255, 255, 0.1);
 }
 
 .square.dark {
     background-color: var(--board-dark);
-    color: var(--board-light);
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.8);
 }
 
+/* Neon Pieces Glow */
 .piece {
     width: 90%;
-    /* Slightly smaller than square */
     height: 90%;
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
     cursor: grab;
-    transition: transform 0.2s;
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     z-index: 2;
     pointer-events: none;
-    /* Let clicks pass to square */
+    filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.4));
+}
+
+.piece:hover {
+    transform: scale(1.15);
+    filter: drop-shadow(0 0 10px var(--accent-color));
 }
 
 .square.highlight {
-    background-color: rgba(255, 255, 0, 0.5) !important;
-    box-shadow: inset 0 0 15px rgba(255, 255, 0, 0.8);
+    background-color: rgba(112, 0, 255, 0.3) !important;
+    box-shadow: inset 0 0 20px var(--primary-color), 0 0 15px var(--primary-color);
 }
 
 .square.valid-move::after {
@@ -259,7 +276,8 @@ main {
     position: absolute;
     width: 25%;
     height: 25%;
-    background: rgba(0, 0, 0, 0.2);
+    background: var(--accent-color);
+    box-shadow: 0 0 10px var(--accent-color);
     border-radius: 50%;
     z-index: 1;
 }
@@ -270,8 +288,21 @@ main {
     width: 100%;
     height: 100%;
     background: var(--threat-color);
-    animation: pulse 1.5s infinite;
+    box-shadow: 0 0 20px var(--threat-color);
+    animation: neonPulse 0.4s infinite alternate;
     z-index: 1;
+}
+
+@keyframes neonPulse {
+    from {
+        opacity: 0.4;
+        box-shadow: 0 0 10px var(--threat-color);
+    }
+
+    to {
+        opacity: 0.9;
+        box-shadow: 0 0 30px var(--threat-color), 0 0 10px red;
+    }
 }
 
 .eliminated-anim {
@@ -380,6 +411,11 @@ main {
     box-shadow: 0 6px 16px rgba(99, 102, 241, 0.6);
 }
 
+.secondary-btn {
+    color: var(--text-light);
+    border: 1px solid var(--glass-border);
+}
+
 /* Tournament Score */
 .tournament-score {
     margin-top: 0.5rem;
@@ -415,12 +451,12 @@ main {
 }
 
 .modal-content {
-    background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%);
+    background: #0f0c29;
+    border: 2px solid var(--accent-color);
+    box-shadow: 0 0 50px var(--accent-color), inset 0 0 50px rgba(0, 0, 0, 0.8);
     padding: 2rem;
     border-radius: 16px;
-    border: 2px solid var(--accent-color);
     text-align: center;
-    box-shadow: 0 0 50px rgba(244, 63, 94, 0.5);
     transform: scale(1);
     transition: transform 0.3s;
     min-width: 300px;
@@ -493,12 +529,6 @@ main {
 
     .player-hud {
         padding: 0.5rem;
-    }
-
-    .player-hud {
-        padding: 0.5rem;
-        margin-bottom: 0.5rem;
-        /* Spacing */
     }
 
     /* Allow scrolling explicitly */

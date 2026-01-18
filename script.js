@@ -191,10 +191,31 @@ async function executeMove(fromR, fromC, toR, toC) {
     await resolveThreatsAndEliminate(movedPiece, toR, toC);
 
     // 7. Check Game Over in handleThreats, if not over, continue to AI
-    // We check gameOver flag? checkWinCondition handles modals.
-    // If modal is visible, we stop.
     if (document.querySelector('.modal').classList.contains('hidden')) {
-        // 8. Trigger AI if needed
+
+        // 8. Skip Turn Logic
+        const nextMoves = getAllValidMoves(turn);
+        if (nextMoves.length === 0) {
+            // Check if BOTH are stuck (Draw)
+            const myMoves = getAllValidMoves(turn === 'w' ? 'b' : 'w');
+            if (myMoves.length === 0) {
+                endGame('draw');
+                return;
+            }
+
+            // Just current player stuck -> Skip
+            showToast(`ל${turn === 'w' ? 'לבן' : 'שחור'} אין מהלכים! התור עובר...`);
+            turn = turn === 'w' ? 'b' : 'w';
+            updateStatus();
+
+            // If skipped to computer, force trigger
+            if (isComputerOpponent && turn === 'b') {
+                setTimeout(makeComputerMove, 1500); // Longer delay to read message
+            }
+            return;
+        }
+
+        // 9. Standard AI Trigger
         if (isComputerOpponent && turn === 'b') {
             setTimeout(makeComputerMove, 500);
         }
@@ -223,6 +244,18 @@ async function resolveThreatsAndEliminate(movedPiece, r, c) {
     checkDrawCondition();
 }
 
+function showToast(msg) {
+    const statusEl = document.getElementById('status-message');
+    // Force specific message even if updateStatus tries to overwrite it later
+    statusEl.innerHTML = `<span style="color: #f43f5e; font-weight: 800;">🛑 ${msg}</span>`;
+    statusEl.style.transform = 'scale(1.1)';
+
+    setTimeout(() => {
+        statusEl.style.transform = 'scale(1)';
+        updateStatus(); // Restore normal status
+    }, 2500);
+}
+
 function makeComputerMove() {
     if (turn !== 'b') return;
 
@@ -232,9 +265,14 @@ function makeComputerMove() {
     let bestMove = null;
     let bestScore = -Infinity;
 
+    // Shuffle moves to break determinism
+    moves.sort(() => Math.random() - 0.5);
+
     for (const move of moves) {
         const score = evaluateMove(move);
-        const random = Math.random() * 0.5;
+        // Larger randomness factor (0-4 points) to vary play style
+        const random = Math.random() * 4.0;
+
         if (score + random > bestScore) {
             bestScore = score + random;
             bestMove = move;
@@ -242,7 +280,7 @@ function makeComputerMove() {
     }
 
     if (bestMove) {
-        isAnimating = false; // Bypass lock for internal call (though it should be free already)
+        isAnimating = false;
         executeMove(bestMove.fromR, bestMove.fromC, bestMove.toR, bestMove.toC);
     }
 }
