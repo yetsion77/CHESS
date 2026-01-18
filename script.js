@@ -53,6 +53,19 @@ function initGame() {
         closeModal();
     });
 
+    // Welcome Screen Logic
+    const startBtn = document.getElementById('start-game-btn');
+    const welcomeScreen = document.getElementById('welcome-screen');
+
+    if (startBtn && welcomeScreen) {
+        startBtn.addEventListener('click', () => {
+            welcomeScreen.style.opacity = '0';
+            setTimeout(() => {
+                welcomeScreen.classList.add('hidden');
+            }, 300);
+        });
+    }
+
     // Reset Tournament Logic
     const resetTourneyBtn = document.getElementById('reset-tournament-btn');
     if (resetTourneyBtn) {

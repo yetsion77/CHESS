@@ -22,8 +22,58 @@ body {
     background: var(--bg-gradient);
     min-height: 100vh;
     direction: rtl;
-    overflow: hidden;
-    /* Prevent scroll if possible */
+    direction: rtl;
+    overflow-x: hidden;
+    /* Only prevent horizontal scroll */
+    min-height: 100vh;
+}
+
+/* ... */
+
+/* Welcome Screen Specifics */
+.welcome-content {
+    background: linear-gradient(135deg, #2e1065 0%, #4c1d95 100%);
+    border-color: #f43f5e;
+    max-width: 500px;
+    width: 90%;
+}
+
+.logo.large {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.large-btn {
+    font-size: 1.5rem;
+    padding: 1.2rem 2rem;
+    margin-top: 1.5rem;
+    background: linear-gradient(to right, #f43f5e, #e11d48);
+}
+
+.rules-box {
+    background: rgba(0, 0, 0, 0.3);
+    padding: 1rem;
+    border-radius: 12px;
+    margin: 1.5rem 0;
+    text-align: right;
+}
+
+.rules-box h3 {
+    margin-top: 0;
+    color: #fb7185;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding-bottom: 0.5rem;
+}
+
+.rules-box ul {
+    padding-right: 1.5rem;
+    margin-bottom: 0;
+}
+
+.rules-box li {
+    margin-bottom: 0.8rem;
+    font-size: 1.1rem;
+    line-height: 1.4;
 }
 
 /* Layout */
@@ -443,6 +493,24 @@ main {
 
     .player-hud {
         padding: 0.5rem;
+    }
+
+    .player-hud {
+        padding: 0.5rem;
+        margin-bottom: 0.5rem;
+        /* Spacing */
+    }
+
+    /* Allow scrolling explicitly */
+    .app-container {
+        height: auto;
+        min-height: 100vh;
+        overflow-y: auto;
+    }
+
+    main {
+        padding-bottom: 4rem;
+        /* Space for scroll */
     }
 
     .modal-content {
