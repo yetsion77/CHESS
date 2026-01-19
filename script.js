@@ -259,30 +259,188 @@ function showToast(msg) {
 function makeComputerMove() {
     if (turn !== 'b') return;
 
-    const moves = getAllValidMoves('b');
-    if (moves.length === 0) return;
+    // Use a timeout to ensure the UI has time to render previous updates
+    setTimeout(() => {
+        const bestMove = getBestMoveMinimax('b', 3); // Depth 3
+        if (bestMove) {
+            executeMove(bestMove.fromR, bestMove.fromC, bestMove.toR, bestMove.toC);
+        }
+    }, 100);
+}
+
+// --- Minimax AI Implementation ---
+
+function getBestMoveMinimax(color, depth) {
+    const isMaximizing = color === 'b';
+    const validMoves = getAllValidMoves(color);
+
+    if (validMoves.length === 0) return null;
+
+    // Optimization: Sort moves to improve pruning (captures first)
+    validMoves.sort((a, b) => {
+        const targetA = board[a.toR][a.toC];
+        const targetB = board[b.toR][b.toC];
+        const valA = targetA ? (PIECE_VALUES[targetA] || 0) : 0;
+        const valB = targetB ? (PIECE_VALUES[targetB] || 0) : 0;
+        return valB - valA;
+    });
 
     let bestMove = null;
-    let bestScore = -Infinity;
+    let bestScore = isMaximizing ? -Infinity : Infinity;
+    let alpha = -Infinity;
+    let beta = Infinity;
 
-    // Shuffle moves to break determinism
-    moves.sort(() => Math.random() - 0.5);
+    for (const move of validMoves) {
+        const undoInfo = simulateMove(move);
+        const score = minimax(depth - 1, alpha, beta, !isMaximizing);
+        undoUndoMove(undoInfo);
+
+        if (isMaximizing) {
+            if (score > bestScore) {
+                bestScore = score;
+                bestMove = move;
+            }
+            alpha = Math.max(alpha, score);
+        } else {
+            if (score < bestScore) {
+                bestScore = score;
+                bestMove = move;
+            }
+            beta = Math.min(beta, score);
+        }
+
+        if (beta <= alpha) break;
+    }
+
+    return bestMove || validMoves[Math.floor(Math.random() * validMoves.length)];
+}
+
+function minimax(depth, alpha, beta, isMaximizing) {
+    if (depth === 0) {
+        return evaluateBoard();
+    }
+
+    const color = isMaximizing ? 'b' : 'w';
+    const moves = getAllValidMoves(color);
+
+    if (moves.length === 0) {
+        // If no moves, check if game over logic applies? 
+        // For simplicity, return current eval.
+        return evaluateBoard();
+    }
+
+    let bestScore = isMaximizing ? -Infinity : Infinity;
 
     for (const move of moves) {
-        const score = evaluateMove(move);
-        // Larger randomness factor (0-4 points) to vary play style
-        const random = Math.random() * 4.0;
+        const undoInfo = simulateMove(move);
+        const score = minimax(depth - 1, alpha, beta, !isMaximizing);
+        undoUndoMove(undoInfo);
 
-        if (score + random > bestScore) {
-            bestScore = score + random;
-            bestMove = move;
+        if (isMaximizing) {
+            bestScore = Math.max(bestScore, score);
+            alpha = Math.max(alpha, score);
+        } else {
+            bestScore = Math.min(bestScore, score);
+            beta = Math.min(beta, score);
+        }
+
+        if (beta <= alpha) break;
+    }
+
+    return bestScore;
+}
+
+function evaluateBoard() {
+    let score = 0;
+
+    // Evaluate material and threats
+    // Black is maximizing (+), White is minimizing (-)
+
+    for (let r = 0; r < 8; r++) {
+        for (let c = 0; c < 8; c++) {
+            const piece = board[r][c];
+            if (piece) {
+                const val = PIECE_VALUES[piece] || 0;
+                // Base material value
+                const materialScore = val * 10;
+
+                // Position Bonus (Central Control)
+                let posBonus = 0;
+                if ((r === 3 || r === 4) && (c === 3 || c === 4)) posBonus = 2;
+
+                // Advanced Pawn Bonus
+                if (piece === 'p') posBonus += (7 - r); // Black P moves down (row increases)
+                if (piece === 'P') posBonus += r;       // White P moves up
+
+                if (isBlack(piece)) {
+                    score += materialScore + posBonus;
+                } else {
+                    score -= materialScore + posBonus;
+                }
+            }
         }
     }
+    return score;
+}
 
-    if (bestMove) {
-        isAnimating = false;
-        executeMove(bestMove.fromR, bestMove.fromC, bestMove.toR, bestMove.toC);
+// Simulates a move on the global board and returns info to undo it
+function simulateMove(move) {
+    const { fromR, fromC, toR, toC } = move;
+
+    const movedPiece = board[fromR][fromC];
+    const targetPiece = board[toR][toC]; // Captured by displacement
+
+    const undoRecord = {
+        move: move,
+        movedPiece: movedPiece,
+        targetPiece: targetPiece,
+        remoteCaptures: [], // List of {r, c, piece}
+        promoted: false
+    };
+
+    // 1. Move Piece
+    board[toR][toC] = movedPiece;
+    board[fromR][fromC] = null;
+
+    // 2. Promotion (Temporary for simulation)
+    // NOTE: The game logic uses the *original* piece for threat calculation?
+    // Let's stick to the game logic: check promotion
+    let pieceForThreats = movedPiece;
+    if (movedPiece === 'P' && toR === 0) {
+        board[toR][toC] = 'Q';
+        undoRecord.promoted = true;
+    } else if (movedPiece === 'p' && toR === 7) {
+        board[toR][toC] = 'q';
+        undoRecord.promoted = true;
     }
+
+    // 3. Resolve Threats (Synchronous version of resolveThreatsAndEliminate)
+    const threats = findThreats(pieceForThreats, toR, toC);
+
+    // Eliminate threats immediately for the simulation
+    threats.forEach(t => {
+        const victim = board[t.r][t.c];
+        if (victim) {
+            undoRecord.remoteCaptures.push({ r: t.r, c: t.c, piece: victim });
+            board[t.r][t.c] = null;
+        }
+    });
+
+    return undoRecord;
+}
+
+function undoUndoMove(info) {
+    const { move, movedPiece, targetPiece, remoteCaptures, promoted } = info;
+    const { fromR, fromC, toR, toC } = move;
+
+    // 1. Restore remote captures
+    remoteCaptures.forEach(cItem => {
+        board[cItem.r][cItem.c] = cItem.piece;
+    });
+
+    // 2. Move piece back
+    board[fromR][fromC] = movedPiece;
+    board[toR][toC] = targetPiece;
 }
 
 function getAllValidMoves(color) {
@@ -304,31 +462,8 @@ function getAllValidMoves(color) {
     return moves;
 }
 
-function evaluateMove(move) {
-    let score = 0;
-    const target = board[move.toR][move.toC];
-    if (target) score += (PIECE_VALUES[target] || 0) * 10;
+// evaluateMove was removed as it's replaced by evaluateBoard and Minimax
 
-    const movedPiece = board[move.fromR][move.fromC];
-    const originalTarget = board[move.toR][move.toC];
-
-    board[move.toR][move.toC] = movedPiece;
-    board[move.fromR][move.fromC] = null;
-
-    const threats = findThreats(movedPiece, move.toR, move.toC);
-    threats.forEach(t => {
-        const victim = board[t.r][t.c];
-        if (victim) score += (PIECE_VALUES[victim] || 0) * 15;
-    });
-
-    board[move.fromR][move.fromC] = movedPiece;
-    board[move.toR][move.toC] = originalTarget;
-
-    if (movedPiece === 'p') score += 1;
-    if (['n', 'b'].includes(movedPiece)) score += 0.5;
-
-    return score;
-}
 
 function findThreats(movedPiece, r, c) {
     const type = movedPiece.toLowerCase();
