@@ -34,6 +34,7 @@ let isAnimating = false;
 let whiteScore = 0;
 let blackScore = 0;
 let isComputerOpponent = true;
+let difficulty = 2; // 1=Easy, 2=Medium, 3=Hard
 
 // Tournament State
 let playerWins = 0;
@@ -59,6 +60,12 @@ function initGame() {
 
     if (startBtn && welcomeScreen) {
         startBtn.addEventListener('click', () => {
+            // Get selected difficulty
+            const difficultyInput = document.querySelector('input[name="difficulty"]:checked');
+            if (difficultyInput) {
+                difficulty = parseInt(difficultyInput.value);
+            }
+
             welcomeScreen.style.opacity = '0';
             setTimeout(() => {
                 welcomeScreen.classList.add('hidden');
@@ -261,7 +268,14 @@ function makeComputerMove() {
 
     // Use a timeout to ensure the UI has time to render previous updates
     setTimeout(() => {
-        const bestMove = getBestMoveMinimax('b', 3); // Depth 3
+        // Map difficulty to depth: 1->1, 2->2, 3->3
+        // Note: Depth 3 is significantly harder than 1.
+
+        let depth = difficulty;
+        // For "Easy", we might want to just do random sometimes? 
+        // Or just Depth 1 is greedy enough (it executes captures but doesn't look ahead).
+
+        const bestMove = getBestMoveMinimax('b', depth);
         if (bestMove) {
             executeMove(bestMove.fromR, bestMove.fromC, bestMove.toR, bestMove.toC);
         }

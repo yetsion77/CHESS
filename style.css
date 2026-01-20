@@ -564,3 +564,54 @@ main {
         font-size: 2.2rem;
     }
 }
+
+/* Difficulty Selection */
+.difficulty-section {
+    text-align: right;
+    margin-bottom: 1.5rem;
+}
+
+.difficulty-section h3 {
+    margin: 0 0 0.5rem;
+    color: var(--text-dim);
+    font-size: 1rem;
+}
+
+.difficulty-options {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
+
+.difficulty-option {
+    flex: 1;
+    cursor: pointer;
+}
+
+.difficulty-option input {
+    display: none;
+}
+
+.difficulty-option .option-box {
+    display: block;
+    padding: 0.8rem;
+    text-align: center;
+    background: #f1f5f9;
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
+    font-weight: 600;
+    color: var(--text-dim);
+    transition: all 0.2s;
+}
+
+.difficulty-option input:checked+.option-box {
+    background: rgba(99, 102, 241, 0.1);
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2);
+    transform: translateY(-2px);
+}
+
+.difficulty-option:hover .option-box {
+    border-color: var(--accent-color);
+}
